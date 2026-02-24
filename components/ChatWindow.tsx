@@ -272,7 +272,6 @@ export default function ChatWindow({ conversationId }: Props) {
                     isOwn={msg.senderId === currentUser?._id}
                     allowedReactions={ALLOWED_REACTIONS}
                     currentUserId={currentUser?._id}
-                    darkMode
                   />
                 </div>
               );
