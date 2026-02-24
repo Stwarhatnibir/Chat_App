@@ -1,6 +1,6 @@
 export default function ChatIndexPage() {
   return (
-    <div className="hidden md:flex flex-col items-center justify-center h-full bg-white">
+    <div className="hidden md:flex flex-col items-center justify-center h-full bg-gray-900">
       <div className="text-center p-8 max-w-sm">
         <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-full mb-6">
           <svg
@@ -17,7 +17,7 @@ export default function ChatIndexPage() {
             />
           </svg>
         </div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+        <h2 className="text-2xl font-semibold text-white mb-2">
           Your messages
         </h2>
         <p className="text-gray-500 leading-relaxed">

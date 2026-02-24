@@ -2,8 +2,9 @@ const authConfig = {
   providers: [
     {
       domain: "https://intense-sturgeon-22.clerk.accounts.dev",
-      applicationId: "convex",
+      applicationID: "convex",
     },
   ],
 };
+
 export default authConfig;

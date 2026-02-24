@@ -41,12 +41,10 @@ export default function ChatWindow({ conversationId }: Props) {
 
   const currentUser = conversation?.me;
 
-  // Mark as read when conversation opens or new messages arrive
   useEffect(() => {
     markAsRead({ conversationId });
   }, [conversationId, messages?.length]);
 
-  // Auto-scroll logic
   const scrollToBottom = useCallback((force = false) => {
     if (!scrollContainerRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } =
@@ -59,7 +57,6 @@ export default function ChatWindow({ conversationId }: Props) {
     }
   }, []);
 
-  // When new messages arrive
   useEffect(() => {
     if (!messages) return;
     const count = messages.length;
@@ -75,7 +72,6 @@ export default function ChatWindow({ conversationId }: Props) {
     setLastMessageCount(count);
   }, [messages?.length]);
 
-  // Initial scroll to bottom
   useEffect(() => {
     setTimeout(() => scrollToBottom(true), 100);
   }, [conversationId]);
@@ -96,7 +92,6 @@ export default function ChatWindow({ conversationId }: Props) {
     setInput("");
     setSendError(null);
 
-    // Reset textarea height
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
     }
@@ -106,21 +101,19 @@ export default function ChatWindow({ conversationId }: Props) {
       scrollToBottom(true);
     } catch (err) {
       setSendError("Failed to send. Tap to retry.");
-      setInput(content); // restore
+      setInput(content);
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
 
-    // Auto-resize textarea
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
       inputRef.current.style.height =
         Math.min(inputRef.current.scrollHeight, 128) + "px";
     }
 
-    // Typing indicator
     setTyping({ conversationId });
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {}, 2000);
@@ -133,7 +126,6 @@ export default function ChatWindow({ conversationId }: Props) {
     }
   };
 
-  // Conversation header info
   const getHeaderInfo = () => {
     if (!conversation)
       return {
@@ -166,19 +158,15 @@ export default function ChatWindow({ conversationId }: Props) {
   const { name, subtitle, avatar, isOnline } = getHeaderInfo();
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-gray-900 text-gray-100">
       {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 pt-safe bg-white shadow-md z-10"
-        style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}
-      >
-        {/* Back button (mobile) */}
+      <div className="flex items-center gap-3 px-4 py-3 pt-safe bg-gray-800 shadow-md z-10">
         <button
           onClick={() => router.push("/chat")}
-          className="md:hidden p-2 hover:bg-gray-100 rounded-xl"
+          className="md:hidden p-2 hover:bg-gray-700 rounded-xl transition"
         >
           <svg
-            className="w-5 h-5 text-gray-600"
+            className="w-5 h-5 text-gray-300"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -192,29 +180,27 @@ export default function ChatWindow({ conversationId }: Props) {
           </svg>
         </button>
 
-        {/* Avatar */}
         <div className="relative flex-shrink-0">
           {avatar?.imageUrl ? (
             <img
               src={avatar.imageUrl}
               alt={name}
-              className="w-10 h-10 rounded-full object-cover"
+              className="w-10 h-10 rounded-full object-cover border-2 border-gray-700"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold">
               {name[0]?.toUpperCase()}
             </div>
           )}
           {isOnline && (
-            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-gray-900"></div>
           )}
         </div>
 
-        {/* Name & status */}
         <div className="flex-1">
-          <p className="font-semibold text-gray-900 text-sm">{name}</p>
+          <p className="font-semibold text-gray-100 text-sm">{name}</p>
           <p
-            className={`text-xs ${isOnline ? "text-green-500" : "text-gray-400"}`}
+            className={`text-xs ${isOnline ? "text-green-400" : "text-gray-400"}`}
           >
             {subtitle}
           </p>
@@ -225,29 +211,27 @@ export default function ChatWindow({ conversationId }: Props) {
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-1 relative"
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-1 relative scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800"
       >
         {messages === undefined ? (
-          // Loading skeleton
           <div className="space-y-4">
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
                 className={`flex items-end gap-2 animate-pulse ${i % 2 === 0 ? "" : "flex-row-reverse"}`}
               >
-                <div className="w-8 h-8 bg-gray-200 rounded-full flex-shrink-0"></div>
+                <div className="w-8 h-8 bg-gray-700 rounded-full flex-shrink-0"></div>
                 <div
-                  className={`h-10 bg-gray-200 rounded-2xl ${i % 2 === 0 ? "w-48" : "w-36"}`}
+                  className={`h-10 bg-gray-700 rounded-2xl ${i % 2 === 0 ? "w-48" : "w-36"}`}
                 ></div>
               </div>
             ))}
           </div>
         ) : messages.length === 0 ? (
-          // Empty state
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+          <div className="flex flex-col items-center justify-center h-full text-center text-gray-400">
+            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-4">
               <svg
-                className="w-8 h-8 text-blue-400"
+                className="w-8 h-8 text-gray-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -260,8 +244,8 @@ export default function ChatWindow({ conversationId }: Props) {
                 />
               </svg>
             </div>
-            <p className="text-gray-600 font-medium">No messages yet</p>
-            <p className="text-gray-400 text-sm mt-1">Say hi to {name}! 👋</p>
+            <p className="text-gray-300 font-medium">No messages yet</p>
+            <p className="text-gray-500 text-sm mt-1">Say hi to {name}! 👋</p>
           </div>
         ) : (
           <>
@@ -276,11 +260,11 @@ export default function ChatWindow({ conversationId }: Props) {
                 <div key={msg._id}>
                   {showDateDivider && (
                     <div className="flex items-center gap-3 my-4">
-                      <div className="flex-1 h-px bg-gray-200"></div>
+                      <div className="flex-1 h-px bg-gray-700"></div>
                       <span className="text-xs text-gray-400 font-medium px-2">
                         {formatDateDivider(msg._creationTime)}
                       </span>
-                      <div className="flex-1 h-px bg-gray-200"></div>
+                      <div className="flex-1 h-px bg-gray-700"></div>
                     </div>
                   )}
                   <MessageItem
@@ -288,24 +272,24 @@ export default function ChatWindow({ conversationId }: Props) {
                     isOwn={msg.senderId === currentUser?._id}
                     allowedReactions={ALLOWED_REACTIONS}
                     currentUserId={currentUser?._id}
+                    darkMode
                   />
                 </div>
               );
             })}
             {typingUsers && typingUsers.length > 0 && (
-              <TypingIndicator users={typingUsers as any[]} />
+              <TypingIndicator users={typingUsers as any[]} darkMode />
             )}
           </>
         )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* New messages button */}
       {showNewMessages && (
         <div className="absolute bottom-24 left-1/2 -translate-x-1/2">
           <button
             onClick={() => scrollToBottom(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-full shadow-lg text-sm font-medium hover:bg-purple-700 transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -325,13 +309,12 @@ export default function ChatWindow({ conversationId }: Props) {
         </div>
       )}
 
-      {/* Error state */}
       {sendError && (
-        <div className="px-4 py-2 bg-red-50 shadow-inner flex items-center justify-between">
-          <span className="text-sm text-red-600">{sendError}</span>
+        <div className="px-4 py-2 bg-red-800 shadow-inner flex items-center justify-between">
+          <span className="text-sm text-red-400">{sendError}</span>
           <button
             onClick={handleSend}
-            className="text-sm font-medium text-red-600 hover:text-red-700 underline"
+            className="text-sm font-medium text-red-400 hover:text-red-300 underline"
           >
             Retry
           </button>
@@ -339,9 +322,9 @@ export default function ChatWindow({ conversationId }: Props) {
       )}
 
       {/* Input */}
-      <div className="px-4 py-3 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+      <div className="px-4 py-3 bg-gray-800 shadow-[0_-2px_10px_rgba(0,0,0,0.3)]">
         <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-start gap-2 bg-gray-100 rounded-2xl px-4 py-2.5">
+          <div className="flex-1 flex items-start gap-2 bg-gray-700 rounded-2xl px-4 py-2.5">
             <textarea
               ref={inputRef}
               value={input}
@@ -349,14 +332,14 @@ export default function ChatWindow({ conversationId }: Props) {
               onKeyDown={handleKeyDown}
               placeholder={`Message ${name}...`}
               rows={1}
-              className="flex-1 bg-transparent text-sm focus:outline-none text-gray-900 placeholder-gray-400 resize-none max-h-32 overflow-y-auto"
+              className="flex-1 bg-transparent text-sm focus:outline-none text-gray-100 placeholder-gray-400 resize-none max-h-32 overflow-y-auto"
               style={{ minHeight: "20px" }}
             />
           </div>
           <button
             onClick={handleSend}
             disabled={!input.trim()}
-            className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-blue-700 transition-all active:scale-95 flex-shrink-0"
+            className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-purple-700 transition-all active:scale-95 flex-shrink-0"
           >
             <svg
               className="w-5 h-5 text-white"
