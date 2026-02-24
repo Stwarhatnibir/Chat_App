@@ -278,7 +278,7 @@ export default function ChatWindow({ conversationId }: Props) {
               );
             })}
             {typingUsers && typingUsers.length > 0 && (
-              <TypingIndicator users={typingUsers as any[]} darkMode />
+              <TypingIndicator users={typingUsers as any[]} />
             )}
           </>
         )}

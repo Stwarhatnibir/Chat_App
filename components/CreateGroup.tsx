@@ -22,14 +22,17 @@ export default function CreateGroup({ onClose }: Props) {
 
   const toggleUser = (id: Id<"users">) => {
     setSelected((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
 
   const handleCreate = async () => {
     if (!groupName.trim() || selected.length < 1) return;
     try {
-      const convId = await createGroup({ memberIds: selected, groupName: groupName.trim() });
+      const convId = await createGroup({
+        memberIds: selected,
+        groupName: groupName.trim(),
+      });
       router.push(`/chat/${convId}`);
       onClose();
     } catch (err) {
@@ -41,9 +44,22 @@ export default function CreateGroup({ onClose }: Props) {
     <div className="flex-1 flex flex-col overflow-hidden bg-gray-900 text-gray-100">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 bg-gray-800 shadow-md">
-        <button onClick={onClose} className="p-1.5 hover:bg-gray-700 rounded-lg transition">
-          <svg className="w-5 h-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        <button
+          onClick={onClose}
+          className="p-1.5 hover:bg-gray-700 rounded-lg transition"
+        >
+          <svg
+            className="w-5 h-5 text-gray-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </button>
         <span className="font-semibold text-gray-100">New Group</span>
@@ -64,7 +80,9 @@ export default function CreateGroup({ onClose }: Props) {
       {/* Selected users */}
       {selected.length > 0 && (
         <div className="px-4 py-2 bg-gray-800 border-b border-gray-700">
-          <p className="text-xs text-gray-400 mb-2">{selected.length} selected</p>
+          <p className="text-xs text-gray-400 mb-2">
+            {selected.length} selected
+          </p>
         </div>
       )}
 
@@ -86,9 +104,7 @@ export default function CreateGroup({ onClose }: Props) {
             key={u._id}
             onClick={() => toggleUser(u._id)}
             className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${
-              selected.includes(u._id)
-                ? "bg-purple-700"
-                : "hover:bg-gray-800"
+              selected.includes(u._id) ? "bg-purple-700" : "hover:bg-gray-800"
             }`}
           >
             <div className="relative flex-shrink-0">
@@ -123,7 +139,9 @@ export default function CreateGroup({ onClose }: Props) {
             </div>
             <div>
               <p className="font-medium text-gray-100 text-sm">{u.name}</p>
-              <p className="text-xs text-gray-400">{u.isOnline ? "Online" : "Offline"}</p>
+              <p className="text-xs text-gray-400">
+                {u.isOnline ? "Online" : "Offline"}
+              </p>
             </div>
           </button>
         ))}
@@ -136,7 +154,7 @@ export default function CreateGroup({ onClose }: Props) {
           disabled={!groupName.trim() || selected.length < 1}
           className="w-full py-2.5 bg-purple-600 text-white rounded-xl font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-purple-700 transition-colors"
         >
-          Create Group ({selected.length} members)
+          Create another group ({selected.length} members)
         </button>
       </div>
     </div>
